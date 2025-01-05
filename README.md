@@ -1,13 +1,12 @@
-
 # Pi-hole HTTPS Setup 🔒
 
 This repository automates the setup of a secure HTTPS connection for your Pi-hole server, including automatic detection and support for Tailscale.
 
 ## Features 🌟
-- Automatically generates SSL certificates and configures your Pi-hole for HTTPS.
-- Detects Tailscale setup and includes it in the SSL configuration.
-- Works seamlessly with Windows, Linux, MacOS, and Android.
-- Simplifies the process with a single command.
+- **Automatically** generates SSL certificates and configures your Pi-hole for HTTPS.
+- Detects **Tailscale** setup and includes it in the SSL configuration.
+- Certificate works seamlessly with **Windows, Linux, Android, MacOS, and iOS**
+- Simplifies the process with a **single command**.
 
 ---
 
@@ -48,12 +47,7 @@ Once the script completes, you'll need to install the certificate on your device
 2. Open the certificate by double-clicking it.
 3. Click **Install Certificate**, choose **Local Machine**, and proceed.
 4. Select **Trusted Root Certification Authorities** and complete the wizard.
-
-### MacOS 🍏
-1. Download the certificate file.
-2. Open **Keychain Access**.
-3. Drag the certificate into the **System** keychain.
-4. Right-click the certificate, select **Get Info**, and set **Trust** to **Always Trust**.
+5. Restart your browser or application to apply the changes.
 
 ### Linux 🐧
 1. Copy the certificate to `/usr/local/share/ca-certificates/`.
@@ -62,11 +56,32 @@ Once the script completes, you'll need to install the certificate on your device
    ```bash
    sudo update-ca-certificates
    ```
+4. Restart your browser or application to apply the changes.
 
 ### Android 📱
 1. Download the certificate file to your device.
-2. Go to **Settings** > **Security** > **Install Certificate**.
+2. Go to **Settings** > **Security** > **More security & Privacy** > **Install a Certificate**.
 3. Select the file and follow the instructions.
+4. Restart your browser or application to apply the changes.
+
+
+### MacOS 🍏
+1. Download the certificate file.
+2. Open **Keychain Access**.
+3. Drag the certificate into the **System** keychain.
+4. Right-click the certificate, select **Get Info**, and set **Trust** to **Always Trust**.
+5. Restart your browser or application to apply the changes.
+
+
+### iOS 📱
+1. Download the `.crt` file to your iPhone or iPad.
+2. Open the **Settings** app.
+3. Go to **General** > **VPN & Device Management** > **Certificate**.
+4. Select the certificate file from your Downloads.
+5. Install the certificate and confirm when prompted.
+6. After installation, go to **Settings** > **General** > **About** > **Certificate Trust Settings**.
+7. Enable trust for your new certificate.
+8. Restart your browser or application to apply the changes.
 
 ---
 
