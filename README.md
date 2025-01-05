@@ -1,5 +1,5 @@
 
-# Pi-hole HTTPS Setup
+# Pi-hole HTTPS Setup 🔒
 
 This repository automates the setup of a secure HTTPS connection for your Pi-hole server, including automatic detection and support for Tailscale.
 
