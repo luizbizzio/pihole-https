@@ -10,15 +10,26 @@ This repository automates the setup of a secure HTTPS connection for your Pi-hol
 
 ---
 
-## Quick Start 🚀
+## Result Preview 🖼️
 
-### Step 1: Run the Script
-Copy and paste the following command into your terminal to run the script:
+Here’s how your Pi-hole interface will look with HTTPS enabled and a valid certificate:
+
+![Pi-hole HTTPS Enabled](./pi-hole-screenshot.png)
+
+---
+
+## Single Command Setup ✅
+
+Skip the hassle and secure your Pi-hole with HTTPS in just **one simple command**:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/luizbizzio/pihole-https/refs/heads/main/pihole-https.sh | sudo bash
 ```
 
-That's it! The script will handle everything automatically, including certificate generation, configuration, and applying HTTPS settings.
+### What Happens Next? 🚀
+- 🚧 **No manual setup needed**: The script will take care of everything, from detecting your environment to generating and applying the SSL certificate.
+- 🌐 **Supports Tailscale**: If Tailscale is installed, it will detect and include its DNS in the configuration.
+- 🔒 **HTTPS applied**: Your Pi-hole admin interface will be protected by HTTPS with a self-signed certificate.
 
 ---
 
