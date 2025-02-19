@@ -138,7 +138,7 @@ EOF
     chown pihole:pihole "$TOML_FILE"
     chmod 644 "$TOML_FILE"
     echo -e "\033[32m[OK] Wrote TLS config to $TOML_FILE.\033[0m"
-    pihole restartdns
+    sudo systemctl restart pihole-FTL
     echo -e "\033[32m[OK] pihole-FTL restarted.\033[0m"
 fi
 
