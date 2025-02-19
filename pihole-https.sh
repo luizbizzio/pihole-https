@@ -56,11 +56,12 @@ extendedKeyUsage = serverAuth, clientAuth
 
 [ alt_names ]
 DNS.1 = $HOSTNAME
+DNS.2 = pi.hole
 EOF"
 
 # Add Tailscale DNS if available
 if [ -n "$TAILSCALE_DNS" ]; then
-    sudo bash -c "echo DNS.2 = $TAILSCALE_DNS >> openssl.cnf"
+    sudo bash -c "echo DNS.3 = $TAILSCALE_DNS >> openssl.cnf"
 fi
 
 # Add each IP to the [alt_names] section
