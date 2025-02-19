@@ -15,7 +15,7 @@ This repository automates the setup of a secure HTTPS connection for your Pi-hol
 Skip the hassle and secure your Pi-hole with HTTPS in just **one simple command**:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/luizbizzio/pihole-https/refs/heads/main/pihole-https.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/luizbizzio/pihole-https/main/pihole-https.sh | sudo bash
 ```
 
 ### What Happens Next? 🚀
