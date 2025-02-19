@@ -1,11 +1,11 @@
 #!/bin/bash
 ################################################################################
 # Pi-hole SSL Setup Script
-# Compatible with both Lighttpd and Pi-hole FTL webserver (6.0).
+# Compatible with both Lighttpd (Pi-hole 5.x) and the Pi-hole 6.x FTL webserver.
 # Run as root: sudo ./setup_pihole_ssl.sh
 ################################################################################
 
-# 1) Check if running as root
+# 1) Ensure script is run as root
 if [ "$(id -u)" -ne 0 ]; then
   echo -e "\033[31m[ERROR] This script must be run as root (sudo).\033[0m"
   exit 1
@@ -13,19 +13,20 @@ fi
 
 echo -e "\033[32m[OK] Running with administrative privileges.\033[0m"
 
+
 ################################################################################
 # 2) Gather system info (HOSTNAME, IPs, Tailscale)
 ################################################################################
 
-# Get dynamic hostname
+# Get the system hostname
 HOSTNAME=$(hostname)
 echo -e "\033[34m[INFO] Detected hostname: $HOSTNAME\033[0m"
 
-# Retrieve all IP addresses
+# Retrieve all local IP addresses
 ALL_IPS=$(hostname -I)
 echo -e "\033[34m[INFO] Detected IP addresses: $ALL_IPS\033[0m"
 
-# Attempt to retrieve Tailscale DNS if installed
+# Attempt to retrieve Tailscale DNS if Tailscale is installed
 TAILSCALE_DNS=""
 if command -v tailscale &>/dev/null; then
     echo -e "\033[34m[INFO] Tailscale detected, attempting to retrieve DNS...\033[0m"
@@ -33,11 +34,12 @@ if command -v tailscale &>/dev/null; then
     if [ -n "$TAILSCALE_DNS" ]; then
         echo -e "\033[32m[OK] Tailscale DNS retrieved: $TAILSCALE_DNS\033[0m"
     else
-        echo -e "\033[33m[WARN] Tailscale found, but no DNS info available.\033[0m"
+        echo -e "\033[33m[WARN] Tailscale found, but no DNS info could be retrieved.\033[0m"
     fi
 else
-    echo -e "\033[31m[INFO] Tailscale is not installed or not configured. Skipping Tailscale DNS.\033[0m"
+    echo -e "\033[31m[INFO] Tailscale is not installed or not configured. Skipping.\033[0m"
 fi
+
 
 ################################################################################
 # 3) Create certificates and keys in /etc/ssl/mycerts
@@ -45,10 +47,10 @@ fi
 
 SSL_DIR="/etc/ssl/mycerts"
 mkdir -p "$SSL_DIR"
-echo -e "\033[32m[OK] Created certificate directory at: $SSL_DIR\033[0m"
+echo -e "\033[32m[OK] Created certificate directory: $SSL_DIR\033[0m"
 cd "$SSL_DIR"
 
-# Create a dynamic openssl.cnf file
+# Create the openssl.cnf file dynamically
 cat << EOF > openssl.cnf
 [ req ]
 default_bits        = 2048
@@ -71,25 +73,25 @@ DNS.1 = $HOSTNAME
 DNS.2 = pi.hole
 EOF
 
-# Add Tailscale DNS if available
+# If Tailscale DNS is available, add it as DNS.3
 if [ -n "$TAILSCALE_DNS" ]; then
     echo "DNS.3 = $TAILSCALE_DNS" >> openssl.cnf
 fi
 
-# Add each IP to the [alt_names] section
+# Append each IP to the [alt_names] section
 IP_INDEX=1
 for IP in $ALL_IPS; do
     echo "IP.$IP_INDEX = $IP" >> openssl.cnf
     IP_INDEX=$((IP_INDEX + 1))
 done
 
-echo -e "\033[32m[OK] openssl.cnf file created in $SSL_DIR.\033[0m"
+echo -e "\033[32m[OK] Generated openssl.cnf in $SSL_DIR.\033[0m"
 
-# Generate private key
+# Generate the private key
 openssl genpkey -algorithm RSA -out "$HOSTNAME.key" -pkeyopt rsa_keygen_bits:2048
 echo -e "\033[32m[OK] Private key generated: $HOSTNAME.key\033[0m"
 
-# Generate X.509 certificate
+# Create an x509 certificate
 openssl req -new -x509 -key "$HOSTNAME.key" -out "$HOSTNAME.crt" -config ./openssl.cnf -extensions v3_req -nodes -days 3650
 echo -e "\033[32m[OK] Certificate created: $HOSTNAME.crt\033[0m"
 
@@ -97,12 +99,14 @@ echo -e "\033[32m[OK] Certificate created: $HOSTNAME.crt\033[0m"
 cat "$HOSTNAME.key" "$HOSTNAME.crt" > "$HOSTNAME.pem"
 echo -e "\033[32m[OK] PEM file created: $HOSTNAME.pem\033[0m"
 
+
 ################################################################################
-# 4) Adjust ownership and permissions for user 'pihole'
+# 4) Set ownership/permissions for user 'pihole'
 ################################################################################
 chown pihole:pihole "$HOSTNAME."*
 chmod 640 "$HOSTNAME."*
-echo -e "\033[32m[OK] Ownership set to pihole:pihole, permissions set to 640.\033[0m"
+echo -e "\033[32m[OK] Set ownership to pihole:pihole and permissions to 640.\033[0m"
+
 
 ################################################################################
 # 5) Detect if Lighttpd is active
@@ -113,16 +117,16 @@ if systemctl is-active --quiet lighttpd; then
     LIGHTTPD_ACTIVE=true
 fi
 
+
 ################################################################################
-# 6) If Lighttpd is active, configure Lighttpd
+# 6) If Lighttpd is active, configure it
 ################################################################################
 if [ "$LIGHTTPD_ACTIVE" = true ]; then
     echo -e "\033[32m[OK] Lighttpd detected and running. Configuring SSL...\033[0m"
 
-    # Install openssl module if needed
     apt-get update
     apt-get install -y lighttpd-mod-openssl
-    echo -e "\033[32m[OK] lighttpd-mod-openssl installed.\033[0m"
+    echo -e "\033[32m[OK] Installed lighttpd-mod-openssl.\033[0m"
 
     CONFIG_FILE="/etc/lighttpd/lighttpd.conf"
     PEM_PATH="$SSL_DIR/$HOSTNAME.pem"
@@ -130,12 +134,12 @@ if [ "$LIGHTTPD_ACTIVE" = true ]; then
     # Add "mod_openssl" if not present
     if ! grep -q '"mod_openssl"' "$CONFIG_FILE"; then
         sed -i '/server.modules = (/a\        "mod_openssl",' "$CONFIG_FILE"
-        echo -e "\033[32m[OK] 'mod_openssl' added to $CONFIG_FILE.\033[0m"
+        echo -e "\033[32m[OK] Added 'mod_openssl' to $CONFIG_FILE.\033[0m"
     else
-        echo -e "\033[33m[WARN] 'mod_openssl' is already present in $CONFIG_FILE.\033[0m"
+        echo -e "\033[33m[WARN] 'mod_openssl' already present in $CONFIG_FILE.\033[0m"
     fi
 
-    # Add SSL block if not present
+    # Add SSL block if missing
     if ! grep -q 'ssl.engine = "enable"' "$CONFIG_FILE"; then
         cat << EOF >> "$CONFIG_FILE"
 
@@ -163,10 +167,10 @@ EOF
     fi
 
 ################################################################################
-# 7) Otherwise, assume Pi-hole 6.0 with built-in FTL webserver
+# 7) Otherwise, assume Pi-hole 6.x with the built-in FTL webserver
 ################################################################################
 else
-    echo -e "\033[32m[OK] Lighttpd is not active. Assuming Pi-hole 6.0 FTL webserver.\033[0m"
+    echo -e "\033[32m[OK] Lighttpd is not active. Assuming Pi-hole 6.x FTL webserver.\033[0m"
     TOML_FILE="/etc/pihole/pihole.toml"
     PEM_PATH="$SSL_DIR/$HOSTNAME.pem"
 
@@ -186,9 +190,11 @@ EOF
     chmod 644 "$TOML_FILE"
     echo -e "\033[32m[OK] Wrote TLS config to $TOML_FILE.\033[0m"
 
-    pihole restartdns
+    # Restart Pi-hole FTL
+    sudo systemctl restart pihole-FTL
     echo -e "\033[32m[OK] pihole-FTL restarted.\033[0m"
 fi
+
 
 ################################################################################
 # 8) Copy the .crt file to /var/www/html for easy download (if directory exists)
@@ -215,6 +221,7 @@ else
     echo -e "\033[34m[INFO] Certificate content (copy into a file named $HOSTNAME.crt):\033[0m"
     cat "$CRT_FILE"
 fi
+
 
 ################################################################################
 # 9) Final instructions
