@@ -80,7 +80,7 @@ cat "$HOSTNAME.key" "$HOSTNAME.crt" > "$HOSTNAME.pem"
 echo -e "\033[32m[OK] PEM file created: $HOSTNAME.pem\033[0m"
 
 chown root:root "$HOSTNAME."*
-chmod 640 "$HOSTNAME."*
+chmod 644 "$HOSTNAME."*
 echo -e "\033[32m[OK] Ownership set to root:root, permissions set to 644.\033[0m"
 
 LIGHTTPD_ACTIVE=false
@@ -164,7 +164,7 @@ cert = "$PEM_PATH"
 EOF
     fi
 
-    chown pihole:pihole "$TOML_FILE"
+    chown root:root "$TOML_FILE"
     chmod 644 "$TOML_FILE"
     echo -e "\033[32m[OK] Wrote TLS config to $TOML_FILE.\033[0m"
     sudo systemctl restart pihole-FTL
