@@ -7,6 +7,11 @@ fi
 
 echo -e "\033[32m[OK] Running with administrative privileges.\033[0m"
 
+if ! command -v openssl &>/dev/null; then
+  apt-get update
+  apt-get install -y openssl
+fi
+
 HOSTNAME=$(hostname)
 echo -e "\033[34m[INFO] Detected hostname: $HOSTNAME\033[0m"
 
@@ -125,16 +130,40 @@ else
     echo -e "\033[32m[OK] Lighttpd is not active. Assuming Pi-hole 6.0 FTL webserver.\033[0m"
     TOML_FILE="/etc/pihole/pihole.toml"
     PEM_PATH="$SSL_DIR/$HOSTNAME.pem"
+
+    # 1) Make sure the file exists
     if [ ! -f "$TOML_FILE" ]; then
         touch "$TOML_FILE"
     fi
-    cat << EOF > "$TOML_FILE"
+
+    # 2) Update or append [webserver] block
+    if grep -q '^\[webserver\]' "$TOML_FILE"; then
+        # Remove only the existing webserver block (and subsequent webserver.tls) if present
+        sed -i '/^\[webserver\]/,/^\[/{/^\[webserver.tls\]/!d}' "$TOML_FILE"
+        # If that fails to remove lines, they might be after a [webserver.tls]
+        sed -i '/^\[webserver.tls\]/,/^\[/{/^\[webserver.paths\]/!d}' "$TOML_FILE"
+    fi
+
+    # 3) Insert the new [webserver] & [webserver.tls] lines if not found
+    if ! grep -q '^\[webserver\]' "$TOML_FILE"; then
+      cat << EOF >> "$TOML_FILE"
+
 [webserver]
 portssl = 443
+EOF
+    fi
+
+    if grep -q '^\[webserver.tls\]' "$TOML_FILE"; then
+        # Replace only cert = ... in the existing webserver.tls block
+        sed -i '/^\[webserver.tls\]/,/^\[/{/^\s*cert\s*=/s|=.*|= "'"$PEM_PATH"'"|}' "$TOML_FILE"
+    else
+      cat << EOF >> "$TOML_FILE"
 
 [webserver.tls]
 cert = "$PEM_PATH"
 EOF
+    fi
+
     chown pihole:pihole "$TOML_FILE"
     chmod 644 "$TOML_FILE"
     echo -e "\033[32m[OK] Wrote TLS config to $TOML_FILE.\033[0m"
