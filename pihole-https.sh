@@ -79,9 +79,9 @@ echo -e "\033[32m[OK] Certificate created: $HOSTNAME.crt\033[0m"
 cat "$HOSTNAME.key" "$HOSTNAME.crt" > "$HOSTNAME.pem"
 echo -e "\033[32m[OK] PEM file created: $HOSTNAME.pem\033[0m"
 
-chown pihole:pihole "$HOSTNAME."*
+chown root:root "$HOSTNAME."*
 chmod 640 "$HOSTNAME."*
-echo -e "\033[32m[OK] Ownership set to pihole:pihole, permissions set to 640.\033[0m"
+echo -e "\033[32m[OK] Ownership set to root:root, permissions set to 644.\033[0m"
 
 LIGHTTPD_ACTIVE=false
 if systemctl is-active --quiet lighttpd; then
