@@ -102,6 +102,7 @@ Once the script completes, you'll need to install the certificate on your device
 - The script automatically detects whether **Lighttpd (pre-6.0)** or **FTL webserver (6.0+)** is in use and configures HTTPS accordingly.
 - The script skips Tailscale detection if it is not installed.
 - Compatible with most major browsers and operating systems.
+- Not compatible with Docker. ⚠️
 
 ---
 
