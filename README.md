@@ -103,6 +103,7 @@ Once the script completes, you'll need to install the certificate on your device
 - The script skips Tailscale detection if it is not installed.
 - Compatible with most major browsers and operating systems.
 - Not compatible with Docker. ⚠️
+- If you don’t use the `pi.hole` domain or you use custom ports in Lighttpd, it’s recommended that you download the `pihole-https.sh` file and adjust it to match your setup. ⚠️
 
 ---
 
