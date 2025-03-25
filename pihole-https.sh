@@ -5,6 +5,11 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
+if ! command -v pihole &>/dev/null; then
+  echo -e "\033[31m[ERROR] Pi-hole not detected. Please install Pi-hole before running this script.\033[0m"
+  exit 1
+fi
+
 echo -e "\033[32m[OK] Running with administrative privileges.\033[0m"
 
 if ! command -v openssl &>/dev/null; then
@@ -199,4 +204,6 @@ echo -e "\033[34m1. Download or copy the .crt file.\033[0m"
 echo -e "\033[34m2. Open your OS certificate manager (Windows, Linux, Android, macOS).\033[0m"
 echo -e "\033[34m3. Import it into 'Trusted Root Certification Authorities'.\033[0m"
 echo -e "\033[34m4. Restart your browser or device if necessary.\033[0m"
-echo -e "\033[32m[OK] Script completed!\033[0m"
+echo -e "\033[32m[OK] Script completed!\033[0m\n"
+echo -e "\033[33m⭐ If this script helped you, consider starring the repo:\n→ https://github.com/luizbizzio/pihole-https\033[0m"
+
