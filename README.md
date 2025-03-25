@@ -2,11 +2,6 @@
 
 This repository automates the setup of a secure HTTPS connection for your Pi-hole server, including automatic detection and support for Tailscale. It supports both older Pi-hole versions (using Lighttpd) and Pi-hole 6.0+ (using the built-in FTL webserver).
 
-## ⭐️ Star This Repo
-
-If this project helped you or saved you some time, please consider giving it a **star**! ⭐  
-It helps others find it and shows appreciation for the effort. Thanks!
-
 ---
 
 ## Features 🌟
@@ -34,12 +29,20 @@ curl -fsSL https://raw.githubusercontent.com/luizbizzio/pihole-https/main/pihole
 
 ---
 
+## 🌟 Support the Project
+
+If this script saved you time or solved a headache, consider dropping a **star** on the repo!  
+It helps others discover the project and keeps the motivation going 🚀
+
+Thanks for the support! 🙌
+
+---
+
 ## Result Preview 🏞️
 
 Here’s how your Pi-hole interface will look with HTTPS enabled and a valid certificate:
 
 ![Pi-hole HTTPS Enabled](./pi-hole-screenshot.png)
-
 
 ---
 
