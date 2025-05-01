@@ -109,6 +109,24 @@ Once the script completes, you'll need to install the certificate on your device
 
 ---
 
+## Uninstall ❌
+
+If you want to remove the HTTPS setup and return Pi-hole to its default configuration, run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/luizbizzio/pihole-https/main/pihole-https-uninstall.sh | sudo bash
+```
+
+### What This Does 🧹
+- 🔥 Deletes the certificate files created at `/etc/ssl/mycerts`.
+- 🔁 Restores the default certificate path in `/etc/pihole/pihole.toml` (for Pi-hole 6.0+).
+- 🧼 Cleans up HTTPS blocks from `/etc/lighttpd/lighttpd.conf` (for Pi-hole versions prior to v6).
+- 🗑 Optionally removes the public `.crt` download file from `/var/www/html`.
+
+> ⚠️ Don't forget to **manually remove the certificate** from your devices (Windows, Android, iOS, etc.) if you installed it.
+
+---
+
 ## Notes 📝
 - The script automatically detects whether **Lighttpd (pre-6.0)** or **FTL webserver (6.0+)** is in use and configures HTTPS accordingly.
 - The script skips Tailscale detection if it is not installed.
