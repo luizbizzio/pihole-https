@@ -114,7 +114,7 @@ Once the script completes, you'll need to install the certificate on your device
 If you want to remove the HTTPS setup and return Pi-hole to its default configuration, run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/luizbizzio/pihole-https/main/pihole-https-uninstall.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/luizbizzio/pihole-https/main/uninstall-pihole-https.sh | sudo bash
 ```
 
 ### What This Does 🧹
