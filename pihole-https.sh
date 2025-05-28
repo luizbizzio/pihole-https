@@ -176,7 +176,7 @@ EOF
     echo -e "\033[32m[OK] pihole-FTL restarted.\033[0m"
 fi
 
-WEB_DIR="/var/www/html"
+WEB_DIR="/var/www/html/admin"
 CRT_FILE="$SSL_DIR/$HOSTNAME.crt"
 
 if [ -d "$WEB_DIR" ]; then
@@ -185,7 +185,7 @@ if [ -d "$WEB_DIR" ]; then
     echo -e "\033[32m[OK] Certificate copied to $WEB_DIR. Accessible via URL.\033[0m"
     if command -v hostname -I &>/dev/null; then
         IP_ADDRESS=$(hostname -I | awk '{print $1}')
-        CERT_URL="http://$IP_ADDRESS/$HOSTNAME.crt"
+        CERT_URL="http://$IP_ADDRESS/admin/$HOSTNAME.crt"
         echo -e "\033[34m[INFO] Download the certificate at:\033[0m"
         echo -e "\033[4;32m$CERT_URL\033[0m"
     else
