@@ -54,8 +54,8 @@ CN = $HOSTNAME
 
 [ v3_req ]
 subjectAltName = @alt_names
-basicConstraints = CA:TRUE
-keyUsage = digitalSignature, keyEncipherment, keyCertSign
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth, clientAuth
 
 [ alt_names ]
